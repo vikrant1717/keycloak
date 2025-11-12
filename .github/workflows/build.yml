@@ -33,4 +33,10 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=vikrant1717_keycloak
+        run: |
+          # FIX: Running 'install' first ensures the keycloak-quarkus-dist artifact
+          # is built and placed into the local M2 cache for the integration tests to use.
+          mvn -B install 
+          
+          # Now run Sonar analysis (you can combine this with the previous line if preferred)
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=vikrant1717_keycloak
